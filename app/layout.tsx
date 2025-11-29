@@ -15,9 +15,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Croma Outdoor",
   description: "Croma Outdoor - Comunicação - Site em construção",
-  verification: {
-    google: "ryXZaKLyL1fJe_EZUJ-PoC_D_Npk-hSwxNRnfCJUr6k",
-  },
 };
 
 export default function RootLayout({
