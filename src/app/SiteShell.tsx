@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useAppTranslation, useLanguage, type TranslationSchema } from "./i18n";
+import { useAppTranslation, useLanguage, type TranslationSchema } from "@/lib/i18n";
 import type { ReactNode } from "react";
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -22,7 +22,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     <div className="site-layout">
       <header className="site-header">
         <div className="brand">
-          <Image src="/assets/croma_logo.png" alt="Croma Outdoor" width={140} height={40} priority />
+          <Image src="/assets/brand/croma_logo.png" alt="Croma Outdoor" width={140} height={40} priority />
           <div>
             <p className="brand-kicker">{brand.tagline}</p>
             <p className="brand-subtitle">{brand.subtitle}</p>
