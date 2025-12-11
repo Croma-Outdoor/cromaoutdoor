@@ -1,0 +1,132 @@
+{
+  "language": {
+    "toggleLabel": "Selecionar idioma",
+    "pt": "PT",
+    "en": "EN"
+  },
+  "brand": {
+    "tagline": "Croma Outdoor",
+    "subtitle": "Mídia exterior em Araguari"
+  },
+  "nav": {
+    "about": "Sobre nós",
+    "solutions": "Soluções",
+    "map": "Mapa",
+    "contact": "Contato"
+  },
+  "hero": {
+    "label": "Impacto arco-íris",
+    "title": "Croma Outdoor",
+    "highlight": "Ilumine o mundo!",
+    "copy": "Levamos marcas para as avenidas de Araguari com mídia exterior premium, produção ágil e um degradê profissional em roxo.",
+    "stats": [
+      {
+        "id": "coverage",
+        "label": "Cobertura",
+        "value": "+60",
+        "description": "faces ativas na região"
+      },
+      {
+        "id": "speed",
+        "label": "Velocidade",
+        "value": "72h",
+        "description": "média para subir campanhas"
+      },
+      {
+        "id": "location",
+        "label": "Cidade",
+        "value": "Araguari",
+        "description": "Triângulo Mineiro • MG"
+      }
+    ]
+  },
+  "about": {
+    "label": "Sobre nós",
+    "title": "Especialistas em OOH com DNA araguarino",
+    "copy": "A Croma Outdoor é uma vitrine para anunciantes que buscam escala com proximidade. Curamos pontos estratégicos, acompanhamos produção e mensuramos resultados para cada outdoor.",
+    "highlights": [
+      {
+        "title": "Curadoria local",
+        "description": "Mapeamos trajetos de alto fluxo em Araguari para formatos estáticos e especiais."
+      },
+      {
+        "title": "Mensuração",
+        "description": "Apresentamos dados de audiência e simulamos impactos antes da veiculação."
+      },
+      {
+        "title": "Produção completa",
+        "description": "Coordenamos impressão, aplicação e manutenção com parceiros certificados."
+      }
+    ]
+  },
+  "media": {
+    "label": "Produtos",
+    "title": "Formatos para cada momento de marca",
+    "cards": [
+      {
+        "title": "Painel premium",
+        "description": "Backlights com moldura em roxo e iluminação noturna."
+      },
+      {
+        "title": "Frontlight clássico",
+        "description": "Cobertura ampla para campanhas de awareness e rotas diárias."
+      },
+      {
+        "title": "Projetos especiais",
+        "description": "Recortes, volumetria e ativações para lançamentos."
+      }
+    ]
+  },
+  "map": {
+    "label": "Mapa",
+    "title": "Visualize onde estamos presentes",
+    "copy": "Em breve você poderá explorar cada outdoor pelo mapa interativo em Leaflet com pinos e fichas detalhadas.",
+    "status": "Mapa interativo em desenvolvimento",
+    "caption": "Mockup ilustrativo da malha urbana de Araguari",
+    "alt": "Mapa estilizado da cidade de Araguari"
+  },
+  "cta": {
+    "label": "Vamos conversar?",
+    "title": "Envie seu briefing e construímos o plano ideal",
+    "copy": "Atendimento consultivo para anunciantes e agências que precisam de agilidade e personalização.",
+    "buttons": {
+      "email": "Enviar e-mail",
+      "whatsapp": "Falar no WhatsApp"
+    }
+  },
+  "footer": {
+    "contact": "Contato",
+    "address": "Endereço",
+    "addressLines": [
+      "Araguari • MG",
+      "Brasil"
+    ],
+    "social": "Social",
+    "socialHandle": "Instagram @cromaoutdoor"
+  },
+  "admin": {
+    "label": "Admin / Backoffice",
+    "title": "Central de operações da Croma Outdoor",
+    "intro": "Esta é uma prévia do painel interno. As credenciais serão controladas manualmente até ativarmos autenticação.",
+    "features": [
+      {
+        "title": "Cadastro de outdoors",
+        "description": "Criar, editar e arquivar faces com fotos e localização."
+      },
+      {
+        "title": "Campanhas",
+        "description": "Organizar reservas, status e relatórios de entrega."
+      },
+      {
+        "title": "Equipe",
+        "description": "Gerenciar acessos enquanto o módulo de login não chega."
+      }
+    ],
+    "nextStepsTitle": "Próximos passos",
+    "nextSteps": [
+      "Definir política de usuários",
+      "Integrar mapa Leaflet com CRUD",
+      "Configurar autenticação futura"
+    ]
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "language": {
+    "toggleLabel": "Select language",
+    "pt": "PT",
+    "en": "EN"
+  },
+  "brand": {
+    "tagline": "Croma Outdoor",
+    "subtitle": "Out-of-home media in Araguari"
+  },
+  "nav": {
+    "about": "About",
+    "solutions": "Solutions",
+    "map": "Map",
+    "contact": "Contact"
+  },
+  "hero": {
+    "label": "Rainbow impact",
+    "title": "Croma Outdoor",
+    "highlight": "Light up the world!",
+    "copy": "We take brands across Araguari’s main avenues with premium OOH, agile production, and a confident purple gradient.",
+    "stats": [
+      {
+        "id": "coverage",
+        "label": "Coverage",
+        "value": "+60",
+        "description": "active faces across the region"
+      },
+      {
+        "id": "speed",
+        "label": "Speed",
+        "value": "72h",
+        "description": "average time to launch campaigns"
+      },
+      {
+        "id": "location",
+        "label": "City",
+        "value": "Araguari",
+        "description": "Triângulo Mineiro • Brazil"
+      }
+    ]
+  },
+  "about": {
+    "label": "About",
+    "title": "OOH specialists with Araguari roots",
+    "copy": "Croma Outdoor is a showcase for advertisers who need scale plus neighborhood proximity. We curate strategic points, manage production, and measure returns for every board.",
+    "highlights": [
+      {
+        "title": "Local curation",
+        "description": "We scout high-flow routes in Araguari for static and special formats."
+      },
+      {
+        "title": "Measurement",
+        "description": "Audience stats and forecasted reach before each flight."
+      },
+      {
+        "title": "Full production",
+        "description": "Print, install, and maintain with certified partners."
+      }
+    ]
+  },
+  "media": {
+    "label": "Products",
+    "title": "Formats for every brand moment",
+    "cards": [
+      {
+        "title": "Premium panel",
+        "description": "Backlit boards with purple framing and night lighting."
+      },
+      {
+        "title": "Classic frontlight",
+        "description": "Broad awareness coverage on daily commuter routes."
+      },
+      {
+        "title": "Special projects",
+        "description": "Cutouts, 3D builds, and activations for launches."
+      }
+    ]
+  },
+  "map": {
+    "label": "Map",
+    "title": "See where we are present",
+    "copy": "Soon you’ll explore every outdoor placement with a Leaflet interactive map, custom pins, and detail cards.",
+    "status": "Interactive map under development",
+    "caption": "Illustrative mockup of Araguari’s city grid",
+    "alt": "Stylized map of Araguari city"
+  },
+  "cta": {
+    "label": "Let’s talk?",
+    "title": "Send your briefing and we’ll build the ideal plan",
+    "copy": "Consultative support for advertisers and agencies that need agility plus tailored coverage.",
+    "buttons": {
+      "email": "Send email",
+      "whatsapp": "Chat on WhatsApp"
+    }
+  },
+  "footer": {
+    "contact": "Contact",
+    "address": "Address",
+    "addressLines": [
+      "Araguari • MG",
+      "Brazil"
+    ],
+    "social": "Social",
+    "socialHandle": "Instagram @cromaoutdoor"
+  },
+  "admin": {
+    "label": "Admin / Backoffice",
+    "title": "Croma Outdoor operations hub",
+    "intro": "This is a preview of the internal console. Credentials will be managed manually until we add authentication.",
+    "features": [
+      {
+        "title": "Outdoor registry",
+        "description": "Create, edit, and archive faces with photos and geodata."
+      },
+      {
+        "title": "Campaigns",
+        "description": "Organize bookings, statuses, and delivery reports."
+      },
+      {
+        "title": "Team",
+        "description": "Manage access while the login module is not live."
+      }
+    ],
+    "nextStepsTitle": "Next steps",
+    "nextSteps": [
+      "Define user policy",
+      "Integrate Leaflet map with CRUD",
+      "Configure future authentication"
+    ]
+  }
+}
