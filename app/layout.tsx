@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "leaflet/dist/leaflet.css";
+import { TranslationProvider } from "./i18n";
+import { SiteShell } from "./SiteShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         {/* Google tag (gtag.js) */}
         <script
@@ -42,10 +45,10 @@ export default function RootLayout({
           }}
         ></script>
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} site-body`}>
+        <TranslationProvider>
+          <SiteShell>{children}</SiteShell>
+        </TranslationProvider>
       </body>
     </html>
   );
