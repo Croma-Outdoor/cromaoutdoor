@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppTranslation, type TranslationSchema } from "@/app/i18n";
+import { useAppTranslation, type TranslationSchema } from "@/lib/i18n";
 
 export function MediaShowcase() {
   const { t } = useAppTranslation();

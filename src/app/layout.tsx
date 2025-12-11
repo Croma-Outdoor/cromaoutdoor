@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
-import { TranslationProvider } from "./i18n";
+import { TranslationProvider } from "@/lib/i18n";
 import { SiteShell } from "./SiteShell";
 
 const geistSans = Geist({

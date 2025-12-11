@@ -1,3 +1,5 @@
-# Assets Folder
+# Assets directory
 
-Place brand visuals (e.g., `croma_logo.png`, `mockup_mapa.png`, photography, etc.) in this directory. Update import paths in the app to reference `/assets/<filename>`.
+- `brand/`: official logos and identity elements exported for the web.
+- Future folders (e.g., `media/`, `mockups/`) should follow the same lowercase naming with hyphens.
+- Reference assets via `/assets/<folder>/<filename>` so Next.js can leverage the public directory.

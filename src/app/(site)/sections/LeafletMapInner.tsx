@@ -9,7 +9,8 @@ const position: [number, number] = [-18.646, -48.193];
 export default function LeafletMapInner() {
   useEffect(() => {
     // Ensure Leaflet markers have default icon paths resolved in Next.js
-    delete (L.Icon.Default as any).prototype._getIconUrl;
+    const defaultIconPrototype = L.Icon.Default.prototype as unknown as { _getIconUrl?: () => void };
+    delete defaultIconPrototype._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
       iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
