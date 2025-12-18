@@ -9,6 +9,7 @@ const emptyForm: Record<keyof Omit<OutdoorPayload, "latitude" | "longitude"> | "
   codigo: "",
   tipo: "",
   bairro: "",
+  cidade: "",
   endereco: "",
   latitude: "",
   longitude: "",
@@ -238,6 +239,7 @@ function OutdoorCrudPanel() {
       codigo: formState.codigo.trim(),
       tipo: formState.tipo,
       bairro: formState.bairro,
+      cidade: formState.cidade,
       endereco: formState.endereco,
       latitude: numbers.latitude,
       longitude: numbers.longitude,
@@ -266,6 +268,7 @@ function OutdoorCrudPanel() {
       codigo: record.codigo,
       tipo: record.tipo,
       bairro: record.bairro,
+      cidade: record.cidade,
       endereco: record.endereco,
       latitude: String(record.latitude),
       longitude: String(record.longitude),
@@ -315,6 +318,10 @@ function OutdoorCrudPanel() {
           <label>
             <span>Bairro</span>
             <input name="bairro" value={formState.bairro} onChange={handleChange} />
+          </label>
+          <label>
+            <span>Cidade</span>
+            <input name="cidade" value={formState.cidade} onChange={handleChange} />
           </label>
           <label>
             <span>Endereço</span>

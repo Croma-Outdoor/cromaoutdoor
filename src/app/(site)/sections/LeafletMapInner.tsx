@@ -1,11 +1,11 @@
 'use client';
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useEffect, useMemo } from "react";
 import { useBillboards } from "@/app/hooks/useBillboards";
 
-const position: [number, number] = [-18.646, -48.193];
+const defaultCenter: [number, number] = [-18.646, -48.193];
 
 export default function LeafletMapInner() {
   const { billboards, isLoading, error } = useBillboards();
