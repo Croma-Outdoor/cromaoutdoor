@@ -13,6 +13,12 @@ export type BillboardPoint = {
   status: string;
   latitude: number;
   longitude: number;
+  code: string;
+  type: string | null;
+  neighborhood: string | null;
+  city: string | null;
+  availableUntil: string | null;
+  imageUrl: string | null;
 };
 
 type BillboardRow = {
@@ -20,10 +26,12 @@ type BillboardRow = {
   codigo?: string | null;
   tipo?: string | null;
   bairro?: string | null;
+  cidade?: string | null;
   endereco?: string | null;
   latitude?: number | null;
   longitude?: number | null;
   ocupato_ate?: string | null;
+  imagem_url?: string | null;
 };
 
 export function useBillboards() {
@@ -39,7 +47,7 @@ export function useBillboards() {
       setIsLoading(true);
       const { data, error } = await supabase
         .from(TABLE_NAME)
-        .select("id,codigo,tipo,bairro,endereco,latitude,longitude,ocupato_ate")
+        .select("id,codigo,tipo,bairro,cidade,endereco,latitude,longitude,ocupato_ate,imagem_url")
         .order("created_at", { ascending: true });
 
       if (!isMounted) return;
@@ -58,6 +66,12 @@ export function useBillboards() {
             status: formatStatus(row.ocupato_ate),
             latitude: row.latitude as number,
             longitude: row.longitude as number,
+            code: row.codigo ?? "--",
+            type: row.tipo ?? null,
+            neighborhood: row.bairro ?? null,
+            city: row.cidade ?? null,
+            availableUntil: normalizeOccupancyDate(row.ocupato_ate),
+            imageUrl: row.imagem_url ?? null,
           }));
         setBillboards(normalized);
         setError(null);
@@ -91,8 +105,22 @@ export function useBillboards() {
 }
 
 function formatStatus(value: string | null | undefined) {
-  if (!value) return "Disponível";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Disponível";
+  const normalized = normalizeOccupancyDate(value);
+  if (!normalized) return "Disponível";
+  const date = new Date(normalized);
   return `Ocupado até ${date.toLocaleDateString("pt-BR")}`;
+}
+
+function normalizeOccupancyDate(value: string | null | undefined) {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (parsed <= today) {
+    return null;
+  }
+  return parsed.toISOString();
 }

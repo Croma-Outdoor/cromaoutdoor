@@ -105,7 +105,7 @@
     "socialHandle": "Instagram @cromaoutdoor"
   },
   "admin": {
-    "label": "Admin / Backoffice",
+    "label": "Administração",
     "title": "Central de operações da Croma Outdoor",
     "intro": "Esta é uma prévia do painel interno. As credenciais serão controladas manualmente até ativarmos autenticação.",
     "features": [

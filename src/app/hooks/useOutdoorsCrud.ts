@@ -14,6 +14,7 @@ export type OutdoorRecord = {
   codigo: string;
   tipo: string;
   bairro: string;
+  cidade: string;
   endereco: string;
   latitude: number;
   longitude: number;
@@ -26,6 +27,7 @@ export type OutdoorPayload = {
   codigo: string;
   tipo?: string;
   bairro?: string;
+  cidade?: string;
   endereco?: string;
   latitude: number;
   longitude: number;
@@ -38,6 +40,7 @@ const defaultRecord: OutdoorRecord = {
   codigo: "",
   tipo: "",
   bairro: "",
+  cidade: "",
   endereco: "",
   latitude: 0,
   longitude: 0,
@@ -84,6 +87,45 @@ function coerceCoordinate(value: number | string | null | undefined, range: { mi
   return Number(clamp(numeric, range.min, range.max).toFixed(6));
 }
 
+function startOfToday() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today;
+}
+
+function sanitizeOccupancyInput(value?: string | null) {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    throw new Error("Data 'Ocupado até' inválida.");
+  }
+
+  const today = startOfToday();
+  if (parsed < today) {
+    throw new Error("A data 'Ocupado até' não pode ser anterior à data de hoje.");
+  }
+
+  if (parsed.getTime() === today.getTime()) {
+    return null;
+  }
+
+  return parsed.toISOString();
+}
+
+function normalizeStoredOccupancy(value?: string | null) {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  if (parsed <= startOfToday()) {
+    return null;
+  }
+
+  return parsed.toISOString();
+}
+
 function mapRow(row: Partial<OutdoorRecord> & { id: number }) {
   return {
     ...defaultRecord,
@@ -92,10 +134,11 @@ function mapRow(row: Partial<OutdoorRecord> & { id: number }) {
     codigo: sanitizeOptionalText(row.codigo) ?? "",
     tipo: sanitizeOptionalText(row.tipo) ?? "",
     bairro: sanitizeOptionalText(row.bairro) ?? "",
+    cidade: sanitizeOptionalText(row.cidade) ?? "",
     endereco: sanitizeOptionalText(row.endereco) ?? "",
     latitude: coerceCoordinate(row.latitude, LATITUDE_RANGE),
     longitude: coerceCoordinate(row.longitude, LONGITUDE_RANGE),
-    ocupato_ate: row.ocupato_ate ?? null,
+    ocupato_ate: normalizeStoredOccupancy(row.ocupato_ate),
     imagem_url: row.imagem_url ?? null,
     created_at: row.created_at ?? null,
   } satisfies OutdoorRecord;
@@ -106,10 +149,11 @@ function normalizePayload(payload: OutdoorPayload) {
     codigo: sanitizeRequiredText(payload.codigo),
     tipo: sanitizeOptionalText(payload.tipo) ?? null,
     bairro: sanitizeOptionalText(payload.bairro) ?? null,
+    cidade: sanitizeOptionalText(payload.cidade) ?? null,
     endereco: sanitizeOptionalText(payload.endereco) ?? null,
     latitude: sanitizeCoordinate(payload.latitude, LATITUDE_RANGE, "Latitude"),
     longitude: sanitizeCoordinate(payload.longitude, LONGITUDE_RANGE, "Longitude"),
-    ocupato_ate: payload.ocupato_ate ? new Date(payload.ocupato_ate).toISOString() : null,
+    ocupato_ate: sanitizeOccupancyInput(payload.ocupato_ate),
     imagem_url: sanitizeOptionalText(payload.imagem_url) ?? null,
   };
 }
@@ -125,7 +169,7 @@ export function useOutdoorsCrud() {
     setIsLoading(true);
     const { data, error } = await supabase
       .from(TABLE_NAME)
-      .select("id,codigo,tipo,bairro,endereco,latitude,longitude,ocupato_ate,imagem_url,created_at")
+      .select("id,codigo,tipo,bairro,cidade,endereco,latitude,longitude,ocupato_ate,imagem_url,created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -151,7 +195,7 @@ export function useOutdoorsCrud() {
       const { data, error } = await supabase
         .from(TABLE_NAME)
         .insert(normalized)
-        .select("id,codigo,tipo,bairro,endereco,latitude,longitude,ocupato_ate,imagem_url,created_at")
+        .select("id,codigo,tipo,bairro,cidade,endereco,latitude,longitude,ocupato_ate,imagem_url,created_at")
         .single();
 
       setIsSaving(false);
@@ -177,7 +221,7 @@ export function useOutdoorsCrud() {
         .from(TABLE_NAME)
         .update(normalized)
         .eq("id", id)
-        .select("id,codigo,tipo,bairro,endereco,latitude,longitude,ocupato_ate,imagem_url,created_at")
+        .select("id,codigo,tipo,bairro,cidade,endereco,latitude,longitude,ocupato_ate,imagem_url,created_at")
         .single();
 
       setIsSaving(false);
