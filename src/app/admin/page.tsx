@@ -1,18 +1,14 @@
 'use client';
 
-import { useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
-import dynamic from "next/dynamic";
+import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import { useAppTranslation, type TranslationSchema } from "@/lib/i18n";
 import { useOutdoorsCrud, type OutdoorPayload, type OutdoorRecord } from "@/app/hooks/useOutdoorsCrud";
 import { useSupabaseAuth } from "@/app/hooks/useSupabaseAuth";
-
-import type { AdminMapCardProps } from "./AdminMapCard";
 
 const emptyForm: Record<keyof Omit<OutdoorPayload, "latitude" | "longitude"> | "latitude" | "longitude", string> = {
   codigo: "",
   tipo: "",
   bairro: "",
-  cidade: "",
   endereco: "",
   latitude: "",
   longitude: "",
@@ -20,32 +16,17 @@ const emptyForm: Record<keyof Omit<OutdoorPayload, "latitude" | "longitude"> | "
   imagem_url: "",
 };
 
-const TYPE_OPTIONS = ["Outdoor", "Digital", "Teste (Debug)"] as const;
-
-const MAP_CENTER: [number, number] = [-18.646, -48.193];
-
-const AdminMapCard = dynamic<AdminMapCardProps>(() => import("./AdminMapCard"), {
-  ssr: false,
-  loading: () => (
-    <article className="stat-card admin-map-card">
-      <header>
-        <p className="section-label">Mapa administrativo</p>
-        <h3>Carregando mapa...</h3>
-        <p className="body-copy">Aguarde enquanto aplicamos o Leaflet para selecionar coordenadas.</p>
-      </header>
-      <div className="admin-map-shell skeleton" />
-    </article>
-  ),
-});
-
 type Credentials = { email: string; password: string };
 
 export default function AdminPage() {
   const { t } = useAppTranslation();
+  const admin = t("admin", { returnObjects: true }) as TranslationSchema["admin"];
   const auth = useSupabaseAuth();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const isAuthenticated = Boolean(auth.session);
+  const { serverTime, error: serverTimeError } = useServerTime(isAuthenticated);
 
   async function handleLogin(credentials: Credentials) {
     setIsLoggingIn(true);
@@ -59,6 +40,14 @@ export default function AdminPage() {
     }
   }
 
+  async function handleSignOut() {
+    setIsSigningOut(true);
+    try {
+      await auth.signOut();
+    } finally {
+      setIsSigningOut(false);
+    }
+  }
 
   let content: ReactNode;
 
@@ -72,6 +61,37 @@ export default function AdminPage() {
   } else if (isAuthenticated && auth.session) {
     content = (
       <>
+        <header>
+          <p className="section-label">{admin.label}</p>
+          <h1>{admin.title}</h1>
+          <p className="body-copy">{admin.intro}</p>
+        </header>
+
+        <div className="media-grid">
+          {admin.features.map((item) => (
+            <article className="admin-card" key={item.title}>
+              <h2>{item.title}</h2>
+              <p>{item.description}</p>
+            </article>
+          ))}
+        </div>
+
+        <article className="stat-card">
+          <p className="section-label">{admin.nextStepsTitle}</p>
+          <ul>
+            {admin.nextSteps.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ul>
+        </article>
+
+        <AccountBanner
+          email={auth.session.user.email ?? "Conta autenticada"}
+          onSignOut={handleSignOut}
+          isSigningOut={isSigningOut}
+          serverTime={serverTime}
+          serverTimeError={serverTimeError}
+        />
         <OutdoorCrudPanel />
       </>
     );
@@ -130,6 +150,42 @@ function LoginCard({ onSubmit, isSubmitting, errorMessage }: { onSubmit: (creden
   );
 }
 
+function AccountBanner({
+  email,
+  onSignOut,
+  isSigningOut,
+  serverTime,
+  serverTimeError,
+}: {
+  email: string;
+  onSignOut: () => Promise<void>;
+  isSigningOut: boolean;
+  serverTime: string | null;
+  serverTimeError: string | null;
+}) {
+  const clockMessage = serverTimeError ?? (serverTime ? formatServerTimestamp(serverTime) : "Sincronizando...");
+  return (
+    <article className="stat-card admin-toolbar">
+      <div>
+        <p className="section-label">Sessão ativa</p>
+        <p className="body-copy">{email}</p>
+        <p className="helper-text">Hora do servidor: {clockMessage}</p>
+      </div>
+      <button type="button" className="cta-button outline" onClick={onSignOut} disabled={isSigningOut}>
+        {isSigningOut ? "Saindo..." : "Encerrar sessão"}
+      </button>
+    </article>
+  );
+}
+
+function formatServerTimestamp(value: string) {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+  return parsed.toLocaleString("pt-BR");
+}
+
 function OutdoorCrudPanel() {
   const {
     records,
@@ -145,17 +201,8 @@ function OutdoorCrudPanel() {
   const [formState, setFormState] = useState(emptyForm);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const todayInputLimit = useMemo(() => new Date().toISOString().slice(0, 10), []);
-  const selectedPosition = useMemo<[number, number]>(() => {
-    const lat = Number(formState.latitude);
-    const lng = Number(formState.longitude);
-    if (Number.isFinite(lat) && Number.isFinite(lng)) {
-      return [lat, lng];
-    }
-    return MAP_CENTER;
-  }, [formState.latitude, formState.longitude]);
 
-  function handleChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function handleChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = event.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
   }
@@ -191,7 +238,6 @@ function OutdoorCrudPanel() {
       codigo: formState.codigo.trim(),
       tipo: formState.tipo,
       bairro: formState.bairro,
-      cidade: formState.cidade,
       endereco: formState.endereco,
       latitude: numbers.latitude,
       longitude: numbers.longitude,
@@ -220,7 +266,6 @@ function OutdoorCrudPanel() {
       codigo: record.codigo,
       tipo: record.tipo,
       bairro: record.bairro,
-      cidade: record.cidade,
       endereco: record.endereco,
       latitude: String(record.latitude),
       longitude: String(record.longitude),
@@ -247,22 +292,13 @@ function OutdoorCrudPanel() {
     setStatusMessage(null);
   }
 
-  function handleCoordinatePick(lat: number, lng: number) {
-    setFormState((prev) => ({
-      ...prev,
-      latitude: lat.toFixed(6),
-      longitude: lng.toFixed(6),
-    }));
-    setStatusMessage("Coordenadas atualizadas pelo mapa.");
-  }
-
   return (
     <section className="admin-panel">
       <header>
-        <h2>Gerenciamento de Outdoors</h2>
+        <p className="section-label">Inventário</p>
+        <h2>Gerencie os outdoors em produção</h2>
         <p className="body-copy">
-          Utilize este formulário para cadastrar novos outdoors na base de dados ou editar os já existentes. Clique no mapa para selecionar
-          coordenadas automaticamente.
+          Todos os registros sobem direto para o Supabase. Utilize este formulário para cadastrar rapidamente novas faces e manter o mapa sincronizado.
         </p>
       </header>
 
@@ -274,22 +310,11 @@ function OutdoorCrudPanel() {
           </label>
           <label>
             <span>Tipo</span>
-            <select name="tipo" value={formState.tipo} onChange={handleChange}>
-              <option value="">Selecione uma opção</option>
-              {TYPE_OPTIONS.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+            <input name="tipo" value={formState.tipo} onChange={handleChange} />
           </label>
           <label>
             <span>Bairro</span>
             <input name="bairro" value={formState.bairro} onChange={handleChange} />
-          </label>
-          <label>
-            <span>Cidade</span>
-            <input name="cidade" value={formState.cidade} onChange={handleChange} placeholder="Uberlândia" />
           </label>
           <label>
             <span>Endereço</span>
@@ -305,7 +330,7 @@ function OutdoorCrudPanel() {
           </label>
           <label>
             <span>Ocupado até</span>
-            <input type="date" name="ocupato_ate" value={formState.ocupato_ate} onChange={handleChange} min={todayInputLimit} />
+            <input type="date" name="ocupato_ate" value={formState.ocupato_ate} onChange={handleChange} />
           </label>
           <label>
             <span>Imagem URL</span>
@@ -327,13 +352,6 @@ function OutdoorCrudPanel() {
         {mutationError && <p className="helper-text error">{mutationError}</p>}
       </form>
 
-      <AdminMapCard
-        records={records}
-        selectedPosition={selectedPosition}
-        onSelectPosition={handleCoordinatePick}
-        onEditRecord={handleEdit}
-      />
-
       <div className="stat-card">
         <p className="section-label">Base atual</p>
         {error && <p className="helper-text error">Erro ao consultar: {error}</p>}
@@ -348,7 +366,6 @@ function OutdoorCrudPanel() {
                 <tr>
                   <th>Código</th>
                   <th>Localização</th>
-                  <th>Cidade</th>
                   <th>Coordenadas</th>
                   <th>Status</th>
                   <th>Ações</th>
@@ -363,7 +380,6 @@ function OutdoorCrudPanel() {
                       <br />
                       <small>{record.bairro}</small>
                     </td>
-                    <td>{record.cidade || "--"}</td>
                     <td>
                       {record.latitude.toFixed(4)}, {record.longitude.toFixed(4)}
                     </td>
@@ -385,4 +401,52 @@ function OutdoorCrudPanel() {
       </div>
     </section>
   );
+}
+
+function useServerTime(isEnabled: boolean, refreshInterval = 60000) {
+  const [serverTime, setServerTime] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isEnabled) {
+      setServerTime(null);
+      setError(null);
+      return undefined;
+    }
+
+    let isMounted = true;
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    async function fetchTime() {
+      try {
+        const response = await fetch("/api/server-time");
+        if (!response.ok) {
+          throw new Error("Falha ao consultar hora do servidor.");
+        }
+        const payload = (await response.json()) as { serverTime: string };
+        if (isMounted) {
+          setServerTime(payload.serverTime);
+          setError(null);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : "Erro ao consultar hora do servidor.");
+        }
+      }
+    }
+
+    fetchTime();
+    if (refreshInterval > 0) {
+      timer = setInterval(fetchTime, refreshInterval);
+    }
+
+    return () => {
+      isMounted = false;
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [isEnabled, refreshInterval]);
+
+  return { serverTime, error };
 }

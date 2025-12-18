@@ -43,8 +43,6 @@ npm run dev
 - Ambiente local roda em `http://localhost:3000`.
 - O App Router separa rotas públicas (`src/app/(site)/**`) da área administrativa (`src/app/admin`).
 - O uso de TypeScript ponta-a-ponta garante tipagem consistente com o schema do Supabase, facilitando manutenção e extensões futuras.
-- Variáveis obrigatórias: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` e `NEXT_PUBLIC_SUPABASE_OUTDOORS_TABLE` (nome da tabela/view que contém latitude/longitude).
-- A rota `/admin` exige login com e-mail/senha cadastrados em **Supabase Auth &gt; Users**; sem sessão válida o CRUD não é exibido.
 
 ### Próximos Passos
 
