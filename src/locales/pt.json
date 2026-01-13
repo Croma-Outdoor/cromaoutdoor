@@ -12,7 +12,8 @@
     "about": "Sobre nós",
     "solutions": "Soluções",
     "map": "Mapa",
-    "contact": "Contato"
+    "contact": "Contato",
+    "signOut": "Sair"
   },
   "hero": {
     "label": "Impacto arco-íris",
@@ -78,12 +79,27 @@
     ]
   },
   "map": {
-    "label": "Mapa",
     "title": "Visualize onde estamos presentes",
-    "copy": "Em breve você poderá explorar cada outdoor pelo mapa interativo em Leaflet com pinos e fichas detalhadas.",
-    "status": "Mapa interativo em desenvolvimento",
-    "caption": "Mockup ilustrativo da malha urbana de Araguari",
-    "alt": "Mapa estilizado da cidade de Araguari"
+    "status": "Clique nos pontos para detalhes. (Mapa interativo em desenvolvimento)",
+    "zoomHintDesktop": "Use Ctrl + rolagem para dar zoom e arraste com o mouse",
+    "zoomHintMobile": "Use o gesto de pinça para aproximar e arraste para explorar",
+    "attribution": "Leaflet | © OpenStreetMap contributors | Esri imagery"
+  },
+  "mapPanel": {
+    "label": "Outdoor selecionado",
+    "close": "Fechar painel",
+    "fields": {
+      "code": "Código",
+      "status": "Status",
+      "neighborhood": "Bairro",
+      "city": "Cidade"
+    }
+  },
+  "session": {
+    "active": "Sessão ativa",
+    "serverTime": "Hora do servidor",
+    "syncing": "Sincronizando...",
+    "restricted": "Visível apenas para administradores autenticados."
   },
   "cta": {
     "label": "Vamos conversar?",
@@ -96,13 +112,21 @@
   },
   "footer": {
     "contact": "Contato",
+    "emailLabel": "E-mail",
+    "phoneLabel": "WhatsApp",
     "address": "Endereço",
     "addressLines": [
       "Araguari • MG",
       "Brasil"
     ],
+    "legal": {
+      "title": "Dados legais",
+      "cnpj": "CNPJ: 46.763.709/0001-40",
+      "responsible": "Responsável: Croma Outdoor LTDA"
+    },
     "social": "Social",
-    "socialHandle": "Instagram @cromaoutdoor"
+    "socialHandle": "Instagram @cromaoutdoor",
+    "note": "© 2026 Croma Outdoor. Todos os direitos reservados."
   },
   "admin": {
     "label": "Administração",
@@ -121,12 +145,6 @@
         "title": "Equipe",
         "description": "Gerenciar acessos enquanto o módulo de login não chega."
       }
-    ],
-    "nextStepsTitle": "Próximos passos",
-    "nextSteps": [
-      "Definir política de usuários",
-      "Integrar mapa Leaflet com CRUD",
-      "Configurar autenticação futura"
     ]
   }
 }

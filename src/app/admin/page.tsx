@@ -1,9 +1,22 @@
 'use client';
 
-import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
+import { useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
+import dynamic from "next/dynamic";
 import { useAppTranslation, type TranslationSchema } from "@/lib/i18n";
 import { useOutdoorsCrud, type OutdoorPayload, type OutdoorRecord } from "@/app/hooks/useOutdoorsCrud";
 import { useSupabaseAuth } from "@/app/hooks/useSupabaseAuth";
+import { useServerTime, formatServerTimestamp } from "@/app/hooks/useServerTime";
+import type { AdminMapCardProps } from "./AdminMapCard";
+
+const AdminMapCard = dynamic<AdminMapCardProps>(() => import("./AdminMapCard"), {
+  ssr: false,
+  loading: () => (
+    <article className="stat-card admin-map-card">
+      <p className="section-label">Mapa administrativo</p>
+      <p className="body-copy">Carregando o mapa com as faces cadastradas...</p>
+    </article>
+  ),
+});
 
 const emptyForm: Record<keyof Omit<OutdoorPayload, "latitude" | "longitude"> | "latitude" | "longitude", string> = {
   codigo: "",
@@ -76,15 +89,6 @@ export default function AdminPage() {
             </article>
           ))}
         </div>
-
-        <article className="stat-card">
-          <p className="section-label">{admin.nextStepsTitle}</p>
-          <ul>
-            {admin.nextSteps.map((step) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ul>
-        </article>
 
         <AccountBanner
           email={auth.session.user.email ?? "Conta autenticada"}
@@ -170,21 +174,14 @@ function AccountBanner({
       <div>
         <p className="section-label">Sessão ativa</p>
         <p className="body-copy">{email}</p>
-        <p className="helper-text">Hora do servidor: {clockMessage}</p>
+        <p className="helper-text">Hora do servidor (visível apenas para administradores autenticados): {clockMessage}</p>
+        <p className="helper-text subtle">Sincroniza a cada 60 segundos para evitar divergências de agenda.</p>
       </div>
       <button type="button" className="cta-button outline" onClick={onSignOut} disabled={isSigningOut}>
         {isSigningOut ? "Saindo..." : "Encerrar sessão"}
       </button>
     </article>
   );
-}
-
-function formatServerTimestamp(value: string) {
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-  return parsed.toLocaleString("pt-BR");
 }
 
 function OutdoorCrudPanel() {
@@ -202,10 +199,31 @@ function OutdoorCrudPanel() {
   const [formState, setFormState] = useState(emptyForm);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [selectedPosition, setSelectedPosition] = useState<[number, number] | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredRecords = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return records;
+    return records.filter((record) => {
+      const fields = [record.codigo, record.tipo, record.bairro, record.cidade, record.endereco].filter(Boolean) as string[];
+      const occupancy = record.ocupato_ate ? "ocupado" : "disponivel";
+      const coordinates = `${record.latitude.toFixed(4)},${record.longitude.toFixed(4)}`;
+      return (
+        fields.some((field) => field.toLowerCase().includes(query)) ||
+        occupancy.includes(query) ||
+        coordinates.includes(query)
+      );
+    });
+  }, [records, searchQuery]);
 
   function handleChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = event.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleSearchChange(event: ChangeEvent<HTMLInputElement>) {
+    setSearchQuery(event.target.value);
   }
 
   function validateNumbers() {
@@ -257,6 +275,7 @@ function OutdoorCrudPanel() {
       }
       setFormState(emptyForm);
       setEditingId(null);
+      setSelectedPosition(null);
     } catch (err) {
       setStatusMessage(err instanceof Error ? err.message : "Erro ao salvar registro.");
     }
@@ -276,10 +295,12 @@ function OutdoorCrudPanel() {
       imagem_url: record.imagem_url ?? "",
     });
     setStatusMessage("Editando outdoor. Altere os campos e salve.");
+    setSelectedPosition([record.latitude, record.longitude]);
   }
 
   async function handleDelete(record: OutdoorRecord) {
-    const confirmed = window.confirm(`Deseja realmente excluir o outdoor ${record.codigo}?`);
+    const confirmed =
+      typeof window === "undefined" ? true : window.confirm(`Deseja realmente excluir o outdoor ${record.codigo}?`);
     if (!confirmed) return;
     try {
       await deleteOutdoor(record.id);
@@ -293,6 +314,17 @@ function OutdoorCrudPanel() {
     setEditingId(null);
     setFormState(emptyForm);
     setStatusMessage(null);
+    setSelectedPosition(null);
+  }
+
+  function handleMapPositionSelect(lat: number, lng: number) {
+    setSelectedPosition([lat, lng]);
+    setFormState((prev) => ({
+      ...prev,
+      latitude: lat.toFixed(6),
+      longitude: lng.toFixed(6),
+    }));
+    setStatusMessage("Coordenadas preenchidas a partir do mapa.");
   }
 
   return (
@@ -304,6 +336,13 @@ function OutdoorCrudPanel() {
           Todos os registros sobem direto para o Supabase. Utilize este formulário para cadastrar rapidamente novas faces e manter o mapa sincronizado.
         </p>
       </header>
+
+      <AdminMapCard
+        records={records}
+        selectedPosition={selectedPosition}
+        onSelectPosition={handleMapPositionSelect}
+        onEditRecord={handleEdit}
+      />
 
       <form className="stat-card" onSubmit={handleSubmit}>
         <div className="form-grid">
@@ -367,93 +406,66 @@ function OutdoorCrudPanel() {
         ) : records.length === 0 ? (
           <p>Nenhum outdoor cadastrado.</p>
         ) : (
-          <div className="table-wrapper">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Localização</th>
-                  <th>Coordenadas</th>
-                  <th>Status</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records.map((record) => (
-                  <tr key={record.id}>
-                    <td>{record.codigo}</td>
-                    <td>
-                      {record.endereco || "--"}
-                      <br />
-                      <small>{record.bairro}</small>
-                    </td>
-                    <td>
-                      {record.latitude.toFixed(4)}, {record.longitude.toFixed(4)}
-                    </td>
-                    <td>{record.ocupato_ate ? `Ocupado até ${new Date(record.ocupato_ate).toLocaleDateString("pt-BR")}` : "Disponível"}</td>
-                    <td>
-                      <button type="button" className="link-button" onClick={() => handleEdit(record)}>
-                        Editar
-                      </button>
-                      <button type="button" className="link-button danger" onClick={() => handleDelete(record)}>
-                        Excluir
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <>
+            <div className="admin-table-toolbar">
+              <label className="search-field">
+                <span>Buscar outdoor</span>
+                <input
+                  type="search"
+                  name="search"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="Código, endereço, bairro ou cidade"
+                />
+              </label>
+              <p className="helper-text subtle">
+                {filteredRecords.length} de {records.length} registros visíveis
+              </p>
+            </div>
+            {filteredRecords.length === 0 ? (
+              <p>Nenhum outdoor corresponde à busca atual.</p>
+            ) : (
+              <div className="table-wrapper">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Localização</th>
+                      <th>Coordenadas</th>
+                      <th>Status</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredRecords.map((record) => (
+                      <tr key={record.id}>
+                        <td>{record.codigo}</td>
+                        <td>
+                          {record.endereco || "--"}
+                          <br />
+                          <small>{record.bairro}</small>
+                        </td>
+                        <td>
+                          {record.latitude.toFixed(4)}, {record.longitude.toFixed(4)}
+                        </td>
+                        <td>{record.ocupato_ate ? `Ocupado até ${new Date(record.ocupato_ate).toLocaleDateString("pt-BR")}` : "Disponível"}</td>
+                        <td>
+                          <button type="button" className="link-button" onClick={() => handleEdit(record)}>
+                            Editar
+                          </button>
+                          <button type="button" className="link-button danger" onClick={() => handleDelete(record)}>
+                            Excluir
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>
   );
-}
-
-function useServerTime(isEnabled: boolean, refreshInterval = 60000) {
-  const [serverTime, setServerTime] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!isEnabled) {
-      setServerTime(null);
-      setError(null);
-      return undefined;
-    }
-
-    let isMounted = true;
-    let timer: ReturnType<typeof setInterval> | undefined;
-
-    async function fetchTime() {
-      try {
-        const response = await fetch("/api/server-time");
-        if (!response.ok) {
-          throw new Error("Falha ao consultar hora do servidor.");
-        }
-        const payload = (await response.json()) as { serverTime: string };
-        if (isMounted) {
-          setServerTime(payload.serverTime);
-          setError(null);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : "Erro ao consultar hora do servidor.");
-        }
-      }
-    }
-
-    fetchTime();
-    if (refreshInterval > 0) {
-      timer = setInterval(fetchTime, refreshInterval);
-    }
-
-    return () => {
-      isMounted = false;
-      if (timer) {
-        clearInterval(timer);
-      }
-    };
-  }, [isEnabled, refreshInterval]);
-
-  return { serverTime, error };
 }

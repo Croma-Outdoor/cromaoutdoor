@@ -50,10 +50,17 @@ export function useServerTime(isEnabled: boolean, refreshInterval = 60000) {
   return { serverTime, error };
 }
 
-export function formatServerTimestamp(value: string) {
+export function formatServerTimestamp(value: string, locale = "pt-BR") {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) {
     return value;
   }
-  return parsed.toLocaleString("pt-BR");
+
+  const formatter = new Intl.DateTimeFormat(locale, {
+    dateStyle: "short",
+    timeStyle: "medium",
+    timeZone: "America/Sao_Paulo",
+  });
+
+  return formatter.format(parsed);
 }

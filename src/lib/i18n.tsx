@@ -1,5 +1,7 @@
 "use client";
 
+"use client";
+
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import i18next from "i18next";
 import { I18nextProvider, initReactI18next, useTranslation as useI18NextTranslation } from "react-i18next";
