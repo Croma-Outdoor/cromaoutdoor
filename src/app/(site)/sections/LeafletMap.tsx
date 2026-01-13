@@ -1,9 +1,15 @@
 'use client';
 
 import dynamic from "next/dynamic";
+import type { BillboardPoint } from "@/app/hooks/useBillboards";
 
-const Map = dynamic(() => import("./LeafletMapInner"), { ssr: false });
+export type LeafletMapProps = {
+  onSelectBoard?: (board: BillboardPoint) => void;
+  selectedBoardId?: string | null;
+};
 
-export function LeafletMap() {
-  return <Map />;
+const Map = dynamic<LeafletMapProps>(() => import("./LeafletMapInner"), { ssr: false });
+
+export function LeafletMap(props: LeafletMapProps) {
+  return <Map {...props} />;
 }

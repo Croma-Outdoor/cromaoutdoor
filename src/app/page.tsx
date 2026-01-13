@@ -8,9 +8,9 @@ export default function Home() {
   return (
     <>
       <HeroSection />
+      <MapPreview />
       <AboutSection />
       <MediaShowcase />
-      <MapPreview />
       <CallToAction />
     </>
   );

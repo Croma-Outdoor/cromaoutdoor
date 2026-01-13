@@ -7,10 +7,11 @@ import { useCtrlScrollZoom } from "@/app/hooks/useCtrlScrollZoom";
 import type { OutdoorRecord } from "@/app/hooks/useOutdoorsCrud";
 
 const MAP_HINT = "Dica: segure CTRL (ou ⌘) para aplicar zoom com o scroll.";
+export const ADMIN_MAP_DEFAULT_CENTER: [number, number] = [-18.646, -48.193];
 
 export type AdminMapCardProps = {
   records: OutdoorRecord[];
-  selectedPosition: [number, number];
+  selectedPosition?: [number, number] | null;
   onSelectPosition: (lat: number, lng: number) => void;
   onEditRecord: (record: OutdoorRecord) => void;
 };
@@ -26,6 +27,11 @@ export default function AdminMapCard({ records, selectedPosition, onSelectPositi
     });
   }, []);
 
+  const effectiveCenter = selectedPosition ?? ADMIN_MAP_DEFAULT_CENTER;
+  const formattedSelection = selectedPosition
+    ? `${selectedPosition[0].toFixed(6)}, ${selectedPosition[1].toFixed(6)}`
+    : null;
+
   return (
     <article className="stat-card admin-map-card">
       <header>
@@ -34,8 +40,8 @@ export default function AdminMapCard({ records, selectedPosition, onSelectPositi
         <p className="body-copy">Clique em qualquer ponto do mapa ou em um pin existente para preencher o formulário automaticamente.</p>
       </header>
       <div className="admin-map-shell">
-        <MapContainer center={selectedPosition} zoom={13} className="admin-map" scrollWheelZoom={false}>
-          <AdminMapCenterer center={selectedPosition} />
+        <MapContainer center={effectiveCenter} zoom={13} className="admin-map" scrollWheelZoom={false}>
+          <AdminMapCenterer center={effectiveCenter} />
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <AdminMapEvents onSelectPosition={onSelectPosition} />
           {records.map((record) => (
@@ -54,6 +60,12 @@ export default function AdminMapCard({ records, selectedPosition, onSelectPositi
           )}
         </MapContainer>
       </div>
+      {formattedSelection && (
+        <p className="selected-coords">
+          Coordenadas selecionadas
+          <span>{formattedSelection}</span>
+        </p>
+      )}
       <p className="map-hint">{MAP_HINT}</p>
     </article>
   );
