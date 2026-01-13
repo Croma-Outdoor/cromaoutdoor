@@ -12,7 +12,8 @@
     "about": "About",
     "solutions": "Solutions",
     "map": "Map",
-    "contact": "Contact"
+    "contact": "Contact",
+    "signOut": "Sign out"
   },
   "hero": {
     "label": "Rainbow impact",
@@ -78,12 +79,27 @@
     ]
   },
   "map": {
-    "label": "Map",
     "title": "See where we are present",
-    "copy": "Soon you’ll explore every outdoor placement with a Leaflet interactive map, custom pins, and detail cards.",
-    "status": "Interactive map under development",
-    "caption": "Illustrative mockup of Araguari’s city grid",
-    "alt": "Stylized map of Araguari city"
+    "status": "Click on the points for details. (Interactive map under development)",
+    "zoomHintDesktop": "Hold Ctrl and scroll to zoom, drag to pan",
+    "zoomHintMobile": "Pinch to zoom and drag to explore on touch screens",
+    "attribution": "Leaflet | © OpenStreetMap contributors | Esri imagery"
+  },
+  "mapPanel": {
+    "label": "Selected board",
+    "close": "Close panel",
+    "fields": {
+      "code": "Code",
+      "status": "Status",
+      "neighborhood": "Neighborhood",
+      "city": "City"
+    }
+  },
+  "session": {
+    "active": "Active session",
+    "serverTime": "Server time",
+    "syncing": "Syncing...",
+    "restricted": "Only visible to logged administrators."
   },
   "cta": {
     "label": "Let’s talk?",
@@ -96,13 +112,21 @@
   },
   "footer": {
     "contact": "Contact",
+    "emailLabel": "Email",
+    "phoneLabel": "WhatsApp",
     "address": "Address",
     "addressLines": [
       "Araguari • MG",
       "Brazil"
     ],
+    "legal": {
+      "title": "Legal details",
+      "cnpj": "CNPJ: 46.763.709/0001-40",
+      "responsible": "Responsible: Croma Outdoor LTDA"
+    },
     "social": "Social",
-    "socialHandle": "Instagram @cromaoutdoor"
+    "socialHandle": "Instagram @cromaoutdoor",
+    "note": "© 2026 Croma Outdoor. All rights reserved."
   },
   "admin": {
     "label": "Admin / Backoffice",
