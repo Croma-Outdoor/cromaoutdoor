@@ -69,7 +69,6 @@ export function MapPreview() {
   return (
     <section className="section" id="mapa" aria-labelledby="map-title">
       <h2 id="map-title">{map.title}</h2>
-      <p className="map-status">{map.status}</p>
       <div className={mapPreviewClass}>
         <LeafletMap onSelectBoard={handleSelectBoard} selectedBoardId={selectedBoardId} />
         {panelBoard && (
@@ -111,6 +110,7 @@ export function MapPreview() {
           </aside>
         )}
         <div className="map-meta" aria-live="polite">
+          <p className="map-status">{map.status}</p>
           <p className="map-hint">{interactionHint}</p>
         </div>
       </div>
