@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import cromaLogo from "../../public/assets/brand/croma_logo.png";
+import cromaLogo from "../../public/assets/brand/croma_logo.webp";
 import { useAppTranslation, useLanguage, type TranslationSchema } from "@/lib/i18n";
 import { useSupabaseAuth } from "@/app/hooks/useSupabaseAuth";
 import { formatServerTimestamp, useServerTime } from "@/app/hooks/useServerTime";
@@ -11,7 +12,6 @@ import { formatServerTimestamp, useServerTime } from "@/app/hooks/useServerTime"
 export function SiteShell({ children }: { children: ReactNode }) {
   const { locale, switchLocale } = useLanguage();
   const { t } = useAppTranslation();
-  const brand = t("brand", { returnObjects: true }) as TranslationSchema["brand"];
   const navCopy = t("nav", { returnObjects: true }) as TranslationSchema["nav"] & { signOut?: string };
   const languageCopy = t("language", { returnObjects: true }) as TranslationSchema["language"];
   const footer = t("footer", { returnObjects: true }) as TranslationSchema["footer"];
@@ -26,6 +26,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const formattedServerTime = serverTime ? formatServerTimestamp(serverTime, resolvedLocale) : null;
   const sessionClock = serverTimeError ?? formattedServerTime ?? sessionCopy.syncing;
   const sessionEmail = auth.session?.user.email ?? "Conta autenticada";
+  const pathname = usePathname();
 
   useEffect(() => {
     function handleScroll() {
@@ -51,19 +52,29 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }
 
   const navItems = [
-    { href: "#sobre", label: navCopy.about },
-    { href: "#solucoes", label: navCopy.solutions },
-    { href: "#mapa", label: navCopy.map },
-    { href: "#contato", label: navCopy.contact },
+    { href: "/", label: navCopy.home },
+    { href: "/sobre", label: navCopy.about },
+    { href: "/metodos", label: navCopy.methods },
+    { href: "/contato", label: navCopy.contact },
   ];
 
-  const navLinks = navItems.map((item) => (
-    <li key={item.href}>
-      <a href={item.href} className="nav-link" onClick={handleNavLinkClick}>
-        {item.label}
-      </a>
-    </li>
-  ));
+  function isNavActive(href: string) {
+    if (href === "/") {
+      return pathname === "/";
+    }
+    return pathname.startsWith(href);
+  }
+
+  const navLinks = navItems.map((item) => {
+    const isActive = isNavActive(item.href);
+    return (
+      <li key={item.href}>
+        <Link href={item.href} className={`nav-link ${isActive ? "active" : ""}`} onClick={handleNavLinkClick}>
+          {item.label}
+        </Link>
+      </li>
+    );
+  });
 
   const desktopNav = isAuthenticated ? (
     <SessionSummary
@@ -118,11 +129,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     <div className="site-layout">
       <header className="site-header">
         <Link href="/" className="brand" aria-label="Ir para a página inicial">
-          <Image src={cromaLogo} alt="Croma Outdoor" width={140} height={40} priority />
-          <div>
-            <p className="brand-kicker">{brand.tagline}</p>
-            <p className="brand-subtitle">{brand.subtitle}</p>
-          </div>
+          <Image src={cromaLogo} alt="Croma Outdoor" width={180} height={60} priority />
         </Link>
         <div className="desktop-nav">{desktopNav}</div>
         {languageSwitcher("desktop-language")}
@@ -175,8 +182,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </div>
             <div className="footer-line">
               <span className="footer-meta">{footer.phoneLabel}</span>
-              <a href="https://wa.me/5534988381931" rel="noreferrer" target="_blank">
-                +55 (34) 98838-1931
+              <a href="https://wa.me/553499270074" rel="noreferrer" target="_blank">
+                +55 (34) 9927-0074
               </a>
             </div>
           </div>
