@@ -9,17 +9,23 @@
     "subtitle": "Mídia exterior em Araguari"
   },
   "nav": {
-    "about": "Sobre nós",
-    "solutions": "Soluções",
-    "map": "Mapa",
-    "contact": "Contato",
+    "home": "início",
+    "about": "sobre",
+    "map": "mapa",
+    "methods": "métodos",
+    "contact": "contato",
     "signOut": "Sair"
   },
   "hero": {
     "label": "Impacto arco-íris",
     "title": "Croma Outdoor",
     "highlight": "Ilumine o mundo!",
-    "copy": "Levamos marcas para as avenidas de Araguari com mídia exterior premium, produção ágil e um degradê profissional em roxo.",
+    "copy": "Levamos marcas para as avenidas de Araguari e região com mídia exterior premium e produção ágil.",
+    "buttons": {
+      "map": "Mapa",
+      "methods": "Métodos",
+      "contact": "Contato"
+    },
     "stats": [
       {
         "id": "coverage",
@@ -37,7 +43,7 @@
         "id": "location",
         "label": "Cidade",
         "value": "Araguari",
-        "description": "Triângulo Mineiro • MG"
+        "description": "+ região • Minas Gerais"
       }
     ]
   },
@@ -99,7 +105,7 @@
     "active": "Sessão ativa",
     "serverTime": "Hora do servidor",
     "syncing": "Sincronizando...",
-    "restricted": "Visível apenas para administradores autenticados."
+    "restricted": "Isso é visível apenas para administradores autenticados."
   },
   "cta": {
     "label": "Vamos conversar?",

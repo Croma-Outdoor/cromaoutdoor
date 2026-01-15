@@ -9,17 +9,23 @@
     "subtitle": "Out-of-home media in Araguari"
   },
   "nav": {
-    "about": "About",
-    "solutions": "Solutions",
-    "map": "Map",
-    "contact": "Contact",
-    "signOut": "Sign out"
+    "home": "home",
+    "about": "about",
+    "map": "map",
+    "methods": "methods",
+    "contact": "contact",
+    "signOut": "sign out"
   },
   "hero": {
     "label": "Rainbow impact",
     "title": "Croma Outdoor",
     "highlight": "Light up the world!",
     "copy": "We take brands across Araguari’s main avenues with premium OOH, agile production, and a confident purple gradient.",
+    "buttons": {
+      "map": "Map",
+      "methods": "Methods",
+      "contact": "Contact"
+    },
     "stats": [
       {
         "id": "coverage",
@@ -37,7 +43,7 @@
         "id": "location",
         "label": "City",
         "value": "Araguari",
-        "description": "Triângulo Mineiro • Brazil"
+        "description": "+ region • Minas Gerais"
       }
     ]
   },
@@ -99,7 +105,7 @@
     "active": "Active session",
     "serverTime": "Server time",
     "syncing": "Syncing...",
-    "restricted": "Only visible to logged administrators."
+    "restricted": "This is only visible to logged administrators."
   },
   "cta": {
     "label": "Let’s talk?",

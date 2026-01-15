@@ -16,7 +16,7 @@ export function CallToAction() {
           <a className="cta-button" href="mailto:cromaoutdoor74@gmail.com">
             {cta.buttons.email}
           </a>
-          <a className="cta-button outline" href="https://wa.me/5534988381931" target="_blank" rel="noreferrer">
+          <a className="cta-button outline" href="https://wa.me/553499270074" target="_blank" rel="noreferrer">
             {cta.buttons.whatsapp}
           </a>
         </div>
