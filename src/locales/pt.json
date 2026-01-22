@@ -11,7 +11,7 @@
   "nav": {
     "home": "início",
     "about": "sobre",
-    "map": "mapa",
+    "map": "inicio",
     "methods": "métodos",
     "contact": "contato",
     "signOut": "Sair"
@@ -22,7 +22,8 @@
     "highlight": "Ilumine o mundo!",
     "copy": "Levamos marcas para as avenidas de Araguari e região com mídia exterior premium e produção ágil.",
     "buttons": {
-      "map": "Mapa",
+      "map": "Onde estamos",
+      "about": "Sobre",
       "methods": "Métodos",
       "contact": "Contato"
     },

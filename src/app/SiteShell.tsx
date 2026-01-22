@@ -52,17 +52,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }
 
   const navItems = [
-    { href: "/", label: navCopy.home },
+    { href: "/#mapa", label: navCopy.map },
     { href: "/sobre", label: navCopy.about },
     { href: "/metodos", label: navCopy.methods },
     { href: "/contato", label: navCopy.contact },
   ];
 
   function isNavActive(href: string) {
-    if (href === "/") {
+    const [basePath] = href.split("#");
+    if (!basePath || basePath === "/") {
       return pathname === "/";
     }
-    return pathname.startsWith(href);
+    return pathname.startsWith(basePath);
   }
 
   const navLinks = navItems.map((item) => {

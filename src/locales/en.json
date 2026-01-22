@@ -11,7 +11,7 @@
   "nav": {
     "home": "home",
     "about": "about",
-    "map": "map",
+    "map": "home",
     "methods": "methods",
     "contact": "contact",
     "signOut": "sign out"
@@ -22,7 +22,8 @@
     "highlight": "Light up the world!",
     "copy": "We take brands across Araguari’s main avenues with premium OOH, agile production, and a confident purple gradient.",
     "buttons": {
-      "map": "Map",
+      "map": "Where we are",
+      "about": "About",
       "methods": "Methods",
       "contact": "Contact"
     },

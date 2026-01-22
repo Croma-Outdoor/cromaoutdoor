@@ -8,6 +8,25 @@ export default function HeroSection() {
   const hero = t("hero", { returnObjects: true }) as TranslationSchema["hero"];
   const navCopy = t("nav", { returnObjects: true }) as TranslationSchema["nav"];
   const featuredStats = hero.stats.slice(0, 2);
+  const heroButtons = [
+    {
+      id: "map",
+      href: "#mapa",
+      label: hero.buttons?.map ?? navCopy.map ?? "Mapa",
+      primary: true,
+      isAnchor: true,
+    },
+    {
+      id: "methods",
+      href: "/metodos",
+      label: hero.buttons?.methods ?? navCopy.methods,
+    },
+    {
+      id: "contact",
+      href: "/contato",
+      label: hero.buttons?.contact ?? navCopy.contact,
+    },
+  ];
 
   return (
     <section className="section hero-section" aria-labelledby="hero-title">
@@ -21,15 +40,21 @@ export default function HeroSection() {
           <p className="body-copy">{hero.copy}</p>
 
           <div className="hero-cta-group" role="group" aria-label={hero.label}>
-            <a className="hero-cta primary" href="#mapa">
-              {hero.buttons?.map ?? navCopy.map ?? "Mapa"}
-            </a>
-            <Link className="hero-cta" href="/metodos">
-              {hero.buttons?.methods ?? navCopy.methods}
-            </Link>
-            <Link className="hero-cta" href="/contato">
-              {hero.buttons?.contact ?? navCopy.contact}
-            </Link>
+            {heroButtons.map((button) => {
+              const buttonClass = `hero-cta${button.primary ? " primary" : ""}`;
+              if (button.isAnchor) {
+                return (
+                  <a key={button.id} className={buttonClass} href={button.href}>
+                    {button.label}
+                  </a>
+                );
+              }
+              return (
+                <Link key={button.id} className={buttonClass} href={button.href}>
+                  {button.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
 
