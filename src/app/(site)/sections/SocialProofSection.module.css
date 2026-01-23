@@ -1,0 +1,149 @@
+.section {
+  position: relative;
+  width: 100%;
+  padding: 0 var(--layout-side-gap);
+  margin: 40px 0;
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 45% 55%;
+  gap: 2rem;
+  align-items: center;
+  background: #0070c0;
+  border-radius: 30px;
+  padding: 50px;
+  z-index: 1;
+  overflow: hidden;
+  min-height: 320px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    padding: 40px;
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 30px;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  max-width: 500px;
+}
+
+.title {
+  font-family: "Outfit", "Montserrat", "Inter", sans-serif;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Logo Grid */
+.logosGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.logoCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  min-height: 90px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    min-width: 100px;
+  }
+}
+
+.logoCard--light {
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.logoCard--dark {
+  background: #004080;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Outdoor Image Wrapper */
+.imageWrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  height: 100%;
+  min-height: 280px;
+
+  @media (max-width: 1024px) {
+    justify-content: center;
+    min-height: auto;
+  }
+}
+
+.outdoorImage {
+  width: auto;
+  height: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  object-position: right bottom;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+
+  @media (max-width: 1024px) {
+    max-width: 100%;
+    max-height: 320px;
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    max-height: 300px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 30px 20px;
+    gap: 2rem;
+  }
+
+  .content {
+    gap: 2rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .logosGrid {
+    max-width: 100%;
+  }
+}
