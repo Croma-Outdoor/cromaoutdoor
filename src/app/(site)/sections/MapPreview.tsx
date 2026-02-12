@@ -110,8 +110,8 @@ export function MapPreview() {
           </aside>
         )}
         <div className="map-meta" aria-live="polite">
-          <p className="map-status">{map.status}</p>
           <p className="map-hint">{interactionHint}</p>
+          <p className="map-status">{map.status}</p>
         </div>
       </div>
     </section>
