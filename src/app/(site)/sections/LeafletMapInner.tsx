@@ -72,7 +72,7 @@ export default function LeafletMapInner({ onSelectBoard, selectedBoardId }: Leaf
         opacity={0.25}
       />
       {error && (
-        <Popup position={defaultCenter}>Não foi possível carregar os pontos. Tente novamente.</Popup>
+        <Popup position={defaultCenter}>Não foi possível carregar os pontos. Recarregue a página.</Popup>
       )}
       {billboards.map((board) => (
         <Marker

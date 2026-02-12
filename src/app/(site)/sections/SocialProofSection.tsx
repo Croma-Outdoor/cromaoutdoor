@@ -71,8 +71,8 @@ export function SocialProofSection() {
           <Image
             src="/media/outdoor.webp"
             alt="Outdoor com marca - Sua marca onde todos veem"
-            width={350}
-            height={600}
+            width={600}
+            height={800}
             priority
             className={styles.outdoorImage}
           />

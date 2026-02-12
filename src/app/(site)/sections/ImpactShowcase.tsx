@@ -8,6 +8,7 @@ export function ImpactShowcase() {
       </h2>
 
       <div className="impact-grid">
+        {/* Card Principal - Esquerda */}
         <article className="impact-card" aria-label="Painel digital Croma Outdoor">
           <div className="impact-card-media" aria-hidden>
             <Image
@@ -33,29 +34,31 @@ export function ImpactShowcase() {
           </div>
         </article>
 
+        {/* Card Central - Estatísticas 340x */}
         <article className="impact-metric-card" aria-label="Frequência de exibição">
           <div className="impact-metric-label">Seu anúncio exibido por mais de:</div>
           <div className="impact-metric-value">
             <span>340x</span>
+            <small>
+              <span>por</span>
+              <span>dia</span>
+            </small>
           </div>
-          <p className="impact-metric-subcopy">
-            isso é mais de
-          </p>
-          <p className="impact-metric-big">10.000x</p>
+          <p className="impact-metric-subcopy">isso é mais de</p>
+          <p className="impact-metric-big">10.000</p>
           <p className="impact-metric-subcopy2">
-            <em>por</em>
-            <em>mês!</em>
+            <em>vezes por mês!</em>
           </p>
           <p className="impact-metric-footnote">* valor aproximado para o painel digital</p>
         </article>
 
+        {/* Coluna Direita - 2 Cards Empilhados */}
         <div className="impact-side-stack" aria-label="Indicadores adicionais">
           <article className="impact-stat-card" aria-label="Alcance de pessoas">
             <p className="impact-stat-label">Para até:</p>
             <p className="impact-stat-value-big">25.000</p>
-            <p className="impact-stat-value-sub">
-              <span>POR</span>
-              <span>DIA</span>
+            <p className="impact-stat-value">
+              <span>Pessoas em 24h</span>
             </p>
             <p className="impact-stat-footnote">* valor estimado de público para o painel digital</p>
           </article>

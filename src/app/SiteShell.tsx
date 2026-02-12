@@ -5,25 +5,41 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import cromaLogo from "../../public/assets/brand/croma_logo.webp";
-import { useAppTranslation, useLanguage, type TranslationSchema } from "@/lib/i18n";
+import { useAppTranslation, type TranslationSchema } from "@/lib/i18n";
 import { useSupabaseAuth } from "@/app/hooks/useSupabaseAuth";
 import { formatServerTimestamp, useServerTime } from "@/app/hooks/useServerTime";
+import { ContactModalProvider, useContactModal } from "@/app/hooks/useContactModal";
+
+type ContactModalCopy = {
+  title: string;
+  description: string;
+  emailLabel: string;
+  phoneLabel: string;
+  close: string;
+};
 
 export function SiteShell({ children }: { children: ReactNode }) {
-  const { locale, switchLocale } = useLanguage();
+  return (
+    <ContactModalProvider>
+      <SiteShellInner>{children}</SiteShellInner>
+    </ContactModalProvider>
+  );
+}
+
+function SiteShellInner({ children }: { children: ReactNode }) {
   const { t } = useAppTranslation();
   const navCopy = t("nav", { returnObjects: true }) as TranslationSchema["nav"] & { signOut?: string };
-  const languageCopy = t("language", { returnObjects: true }) as TranslationSchema["language"];
   const footer = t("footer", { returnObjects: true }) as TranslationSchema["footer"];
   const sessionCopy = t("session", { returnObjects: true }) as TranslationSchema["session"];
+  const contactModalCopy = t("contactModal", { returnObjects: true }) as ContactModalCopy;
   const auth = useSupabaseAuth();
+  const contactModal = useContactModal();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const isAuthenticated = Boolean(auth.session);
   const { serverTime, error: serverTimeError } = useServerTime(isAuthenticated);
-  const resolvedLocale = locale === "pt" ? "pt-BR" : "en-US";
-  const formattedServerTime = serverTime ? formatServerTimestamp(serverTime, resolvedLocale) : null;
+  const formattedServerTime = serverTime ? formatServerTimestamp(serverTime, "pt-BR") : null;
   const sessionClock = serverTimeError ?? formattedServerTime ?? sessionCopy.syncing;
   const sessionEmail = auth.session?.user.email ?? "Conta autenticada";
   const pathname = usePathname();
@@ -51,12 +67,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
     setMobileMenuOpen(false);
   }
 
+  function handleContactClick() {
+    setMobileMenuOpen(false);
+    contactModal.open();
+  }
+
   const navItems = [
     { href: "/#mapa", label: navCopy.map },
     { href: "/sobre", label: navCopy.about },
     { href: "/metodos", label: navCopy.methods },
-    { href: "/contato", label: navCopy.contact },
   ];
+
+  const contactItem = { label: navCopy.contact };
 
   function isNavActive(href: string) {
     const [basePath] = href.split("#");
@@ -77,6 +99,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
     );
   });
 
+  const contactNavItem = (
+    <li key="contato">
+      <button type="button" className="nav-link nav-link-button" onClick={handleContactClick}>
+        {contactItem.label}
+      </button>
+    </li>
+  );
+
   const desktopNav = isAuthenticated ? (
     <SessionSummary
       email={sessionEmail}
@@ -88,23 +118,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
     />
   ) : (
     <nav>
-      <ul>{navLinks}</ul>
+      <ul>{navLinks}{contactNavItem}</ul>
     </nav>
-  );
-
-  const languageSwitcher = (extraClass?: string) => (
-    <div className={`language-toggle ${extraClass ?? ""}`} role="group" aria-label={languageCopy.toggleLabel}>
-      {(["pt", "en"] as const).map((code) => (
-        <button
-          key={code}
-          type="button"
-          className={`language-chip ${locale === code ? "active" : ""}`}
-          onClick={() => switchLocale(code)}
-        >
-          {languageCopy[code]}
-        </button>
-      ))}
-    </div>
   );
 
   const mobileMenuContent = (
@@ -120,9 +135,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
         />
       )}
       <nav>
-        <ul>{navLinks}</ul>
+        <ul>{navLinks}{contactNavItem}</ul>
       </nav>
-      {languageSwitcher("mobile-language")}
     </div>
   );
 
@@ -133,7 +147,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <Image src={cromaLogo} alt="Croma Outdoor" width={180} height={60} priority />
         </Link>
         <div className="desktop-nav">{desktopNav}</div>
-        {languageSwitcher("desktop-language")}
         <button
           type="button"
           className="nav-toggle"
@@ -175,37 +188,92 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       <footer className="site-footer">
         <div className="footer-grid">
-          <div className="footer-block">
+          <div className="footer-column">
             <p className="footer-label">{footer.contact}</p>
-            <div className="footer-line">
+            <div className="footer-item">
               <span className="footer-meta">{footer.emailLabel}</span>
               <a href="mailto:cromaoutdoor74@gmail.com">cromaoutdoor74@gmail.com</a>
             </div>
-            <div className="footer-line">
+            <div className="footer-item">
               <span className="footer-meta">{footer.phoneLabel}</span>
               <a href="https://wa.me/553499270074" rel="noreferrer" target="_blank">
                 +55 (34) 9927-0074
               </a>
             </div>
           </div>
-          <div className="footer-block">
-            <p className="footer-label">{footer.address}</p>
-            {footer.addressLines.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-          </div>
-          <div className="footer-block">
-            <p className="footer-label">{footer.legal.title}</p>
-            <p>{footer.legal.cnpj}</p>
-            <p>{footer.legal.responsible}</p>
-          </div>
-          <div className="footer-block">
+          <div className="footer-column">
             <p className="footer-label">{footer.social}</p>
             <p>{footer.socialHandle}</p>
+            <Link href="/privacidade" className="footer-label footer-link" id="privacy-color">
+              {footer.privacy}
+            </Link>
+            <p>{footer.cnpj}</p>
+            <p>{footer.responsible}</p>
           </div>
         </div>
         <p className="footer-note">{footer.note}</p>
       </footer>
+
+      {/* Contact Modal */}
+      {contactModal.isOpen && (
+        <div className="contact-modal-overlay" onClick={() => contactModal.close()}>
+          <div className="contact-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="contact-modal-close"
+              onClick={() => contactModal.close()}
+              aria-label={contactModalCopy.close}
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 6L6 18" />
+                <path d="M6 6l12 12" />
+              </svg>
+            </button>
+            <h2 className="contact-modal-title">{contactModalCopy.title}</h2>
+            <p className="contact-modal-description">{contactModalCopy.description}</p>
+            <div className="contact-modal-links">
+              <div className="contact-modal-item">
+                <span className="contact-modal-label">{contactModalCopy.emailLabel}</span>
+                <a href="mailto:cromaoutdoor74@gmail.com" className="contact-modal-link">
+                  cromaoutdoor74@gmail.com
+                </a>
+              </div>
+              <div className="contact-modal-item">
+                <span className="contact-modal-label">{contactModalCopy.phoneLabel}</span>
+                <a
+                  href="https://wa.me/553499270074"
+                  rel="noreferrer"
+                  target="_blank"
+                  className="contact-modal-link"
+                >
+                  +55 (34) 9927-0074
+                </a>
+              </div>
+            </div>
+            <div className="contact-modal-buttons">
+              <a href="mailto:cromaoutdoor74@gmail.com" className="cta-button">
+                {contactModalCopy.emailLabel}
+              </a>
+              <a
+                href="https://wa.me/553499270074"
+                rel="noreferrer"
+                target="_blank"
+                className="cta-button whatsapp"
+              >
+                {contactModalCopy.phoneLabel}
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
