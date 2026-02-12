@@ -11,7 +11,7 @@
   "nav": {
     "home": "home",
     "about": "about",
-    "map": "map",
+    "map": "home",
     "methods": "methods",
     "contact": "contact",
     "signOut": "sign out"
@@ -22,7 +22,8 @@
     "highlight": "Light up the world!",
     "copy": "We take brands across Araguari’s main avenues with premium OOH, agile production, and a confident purple gradient.",
     "buttons": {
-      "map": "Map",
+      "map": "Where we are",
+      "about": "About",
       "methods": "Methods",
       "contact": "Contact"
     },
@@ -86,7 +87,7 @@
   },
   "map": {
     "title": "See where we are present",
-    "status": "Click on the points for details. (Interactive map under development)",
+    "status": "Click on the points for details.",
     "zoomHintDesktop": "Hold Ctrl and scroll to zoom, drag to pan",
     "zoomHintMobile": "Pinch to zoom and drag to explore on touch screens",
     "attribution": "Leaflet | © OpenStreetMap contributors | Esri imagery"
@@ -115,8 +116,13 @@
       "email": "Send email",
       "whatsapp": "Chat on WhatsApp"
     }
-  },
-  "footer": {
+  },  "contactModal": {
+    "title": "Contact us",
+    "description": "Reach us via email or WhatsApp. We'll get back to you as soon as possible.",
+    "emailLabel": "Email",
+    "phoneLabel": "WhatsApp",
+    "close": "Close"
+  },  "footer": {
     "contact": "Contact",
     "emailLabel": "Email",
     "phoneLabel": "WhatsApp",
